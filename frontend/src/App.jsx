@@ -63,15 +63,37 @@ function Inner() {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
-    auth.me()
-      .then((user) => {
-        dispatch({ type: 'SET_USER', user });
-        setAuthed(true);
-        sysLog('AUTH VERIFIED — WELCOME ' + (user.displayName || user.id).toUpperCase());
-        loadPlaylists();
-      })
-      .catch(() => setAuthed(false))
-      .finally(() => setChecking(false));
+    let cancelled = false;
+
+    // Spotify blocks iframe embedding (X-Frame-Options), so OAuth runs in a
+    // separate top-level tab. Re-check the session when the user comes back.
+    const checkAuth = () =>
+      auth.me()
+        .then((user) => {
+          if (cancelled) return;
+          dispatch({ type: 'SET_USER', user });
+          setAuthed(true);
+          setChecking(false);
+          sysLog('AUTH VERIFIED — WELCOME ' + (user.displayName || user.id).toUpperCase());
+          loadPlaylists();
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setAuthed(false);
+          setChecking(false);
+        });
+
+    checkAuth();
+
+    const onFocus = () => { if (!cancelled) checkAuth(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onFocus);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onFocus);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (checking) {

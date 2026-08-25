@@ -7,7 +7,7 @@ export default function LoginPage() {
         <div className="big-logo"><span className="r">RETRO</span><span className="p">PLAYER</span></div>
         <div className="tagline">// RETRO_HACKER EDITION — SYSTEM OFFLINE</div>
 
-        <a href={auth.loginUrl()}>
+        <a href={auth.loginUrl()} target="_blank" rel="noopener">
           <button className="login-btn">
             <svg width="20" height="20" viewBox="0 0 168 168" fill="none">
               <circle cx="84" cy="84" r="84" fill="#1DB954"/>
