@@ -1,0 +1,17 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "secrets": [
+    {
+      "name": "SPOTIFY_CLIENT_ID",
+      "description": "Spotify Developer App Client ID from https://developer.spotify.com/dashboard (app settings)",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "SPOTIFY_CLIENT_SECRET",
+      "description": "Spotify Developer App Client Secret from https://developer.spotify.com/dashboard (app settings)",
+      "requiredAtBoot": false
+    }
+  ]
+}
